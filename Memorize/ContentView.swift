@@ -22,7 +22,7 @@ struct ContentView: View {
       }
       .foregroundColor(.orange)
       Spacer()
-      ThemeChoser(emojis: $emojis)
+      ThemeChoser(emojiCount: $emojiCount, emojis: $emojis)
     }
     .font(.largeTitle)
     .padding(.horizontal)
@@ -51,6 +51,7 @@ struct ContentView: View {
   }
 }
 
+
 struct CardView: View {
   let content: String
   @State private var isFaceUp = false
@@ -72,27 +73,33 @@ struct CardView: View {
   }
 }
 
+
+///HStack with 3 ThemeChoserButton's
 struct ThemeChoser: View {
+  @Binding var emojiCount: Int
   @Binding var emojis: [String]
   var body: some View {
     HStack(alignment: .firstTextBaseline) {
-      ThemeChoserButton(emojis: $emojis, selectedEmojis: EmojiStore.vehicles, imageName: "car", description: "Vehicles")
+      ThemeChoserButton(emojiCount: $emojiCount, emojis: $emojis, selectedEmojis: EmojiStore.vehicles, imageName: "car", description: "Vehicles")
       Spacer()
-      ThemeChoserButton(emojis: $emojis, selectedEmojis: EmojiStore.flags, imageName: "flag", description: "Flags")
+      ThemeChoserButton(emojiCount: $emojiCount, emojis: $emojis, selectedEmojis: EmojiStore.flags, imageName: "flag", description: "Flags")
         .padding(.trailing)
       Spacer()
-      ThemeChoserButton(emojis: $emojis, selectedEmojis: EmojiStore.fruits, imageName: "circle.fill", description: "Fruits")
+      ThemeChoserButton(emojiCount: $emojiCount, emojis: $emojis, selectedEmojis: EmojiStore.fruits, imageName: "circle.fill", description: "Fruits")
     }
   }
 }
 
+///Button with label made of VStack-ed SF symbol and short text description
 struct ThemeChoserButton: View {
+  @Binding var emojiCount: Int
   @Binding var emojis: [String]
   var selectedEmojis: [String]
   var imageName, description: String
   var body: some View {
     Button {
       emojis = selectedEmojis.shuffled()
+      emojiCount = Int.random(in: 4...16)
     } label: {
       VStack {
         Image(systemName: imageName)
@@ -124,8 +131,6 @@ struct ContentView_Previews: PreviewProvider {
       ContentView()
         .previewInterfaceOrientation(.landscapeRight)
       ContentView()
-        
-        
     }
   }
 }
