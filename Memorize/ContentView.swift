@@ -128,8 +128,8 @@ struct EmojiStore {
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      ContentView()
-        .previewInterfaceOrientation(.landscapeRight)
+//      ContentView()
+//        .previewInterfaceOrientation(.landscapeRight)
       ContentView()
     }
   }
