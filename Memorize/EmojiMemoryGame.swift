@@ -6,17 +6,53 @@
 //
 
 import Foundation
+import SwiftUI
 
 
-class EmojiMemoryGame {
-  static let emojis = ["🚲", "🚂", "🚁", "🚜", "🚕", "🏎", "🚑", "🚓", "🚒", "✈️", "🚀", "⛵️", "🛸", "🛶", "🚌", "🏍", "🛺", "🚠", "🛵", "🚗", "🚚", "🚇", "🚙", "🚝"]
-  static func createMemoryGame() -> MemoryGame<String> {
-    MemoryGame<String>(numberOfPairsOfCards: 6) { pairIndex in
-      emojis[pairIndex]
+class EmojiMemoryGame: ObservableObject {
+  static func createMemoryGame(with theme: Theme) -> MemoryGame<String> {
+    MemoryGame<String>(numberOfPairsOfCards: theme.numberOfPairsOfCardsToShow) { pairIndex in
+      theme.emojis[pairIndex]
     }
   }
-  private(set) var model = createMemoryGame()
+  
+  @Published private var model: MemoryGame<String>
+  
   var cards: Array<MemoryGame<String>.Card> {
     model.cards
+  }
+  
+  private(set) var theme: Theme
+  
+  var color: Color {
+    switch theme.color {
+    case .purple: return .purple
+    case .orange: return .orange
+    case .yellow: return .yellow
+    case .blue: return .blue
+    case .gray: return .gray
+    case .green: return .green
+    case .red: return .red
+    }
+  }
+  
+  var score: String {
+    String(model.score)
+  }
+  
+  init() {
+    theme = Theme.themes.randomElement() ?? Theme()
+    model = EmojiMemoryGame.createMemoryGame(with: theme)
+  }
+  
+  //MARK: - Intent(s)
+  func choose(_ card: MemoryGame<String>.Card) {
+    model.choose(card)
+  }
+  
+  func startNewGame(theme: Theme? = nil) {
+    let theme = theme ?? Theme()
+    self.theme = theme
+    model = EmojiMemoryGame.createMemoryGame(with: self.theme)
   }
 }

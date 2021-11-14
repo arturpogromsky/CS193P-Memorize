@@ -8,115 +8,83 @@
 import SwiftUI
 
 struct ContentView: View {
-  @State var emojis = EmojiStore.vehicles
-  @State var emojiCount = 16
+  @ObservedObject var viewModel: EmojiMemoryGame
   var body: some View {
     VStack(alignment: .center) {
-      Text("Memorize!")
+      HStack(alignment: .firstTextBaseline) {
+        Text("Score: " + viewModel.score)
+        Spacer()
+        Text(viewModel.theme.name)
+          .font(.title2)
+          .fontWeight(.bold)
+        Spacer()
+        MenuView(viewModel: viewModel)
+      }
+      .font(.headline)
       ScrollView {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-          ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
-            CardView(content: emoji)
+          ForEach(viewModel.cards) { card in
+            CardView(card: card)
+              .onTapGesture { viewModel.choose(card) }
+              .aspectRatio(2/3, contentMode: .fill)
           }
         }
       }
-      .foregroundColor(.orange)
-      Spacer()
-      ThemeChoser(emojiCount: $emojiCount, emojis: $emojis)
+      .foregroundColor(viewModel.color)
     }
     .font(.largeTitle)
     .padding(.horizontal)
   }
-  
-  var plusButton: some View {
-    Button {
-      if emojiCount < emojis.count {
-        emojiCount += 1
-      }
-    } label: {
-      Image(systemName: "plus.circle")
-        .font(.largeTitle)
-    }
-  }
-  
-  var minusButton: some View {
-    Button {
-      if emojiCount > 1 {
-        emojiCount -= 1
-      }
-    } label: {
-      Image(systemName: "minus.circle")
-        .font(.largeTitle)
-    }
-  }
+//  
+//  func minimumSize(forNumberOfCards number: Int) -> CGFloat {
+//    
+//  }
 }
 
 
 struct CardView: View {
-  let content: String
-  @State private var isFaceUp = false
+  let card: MemoryGame<String>.Card
   var body: some View {
     ZStack {
       let cornerRadius: CGFloat = 15
       let roundedRectangle = RoundedRectangle(cornerRadius: cornerRadius)
-      roundedRectangle
-        .strokeBorder(lineWidth: 3)
-        .background(Color.white)
-        .cornerRadius(15)
-      Text(content)
-      if isFaceUp {
+      if card.isFaceUp {
+        roundedRectangle
+          .strokeBorder(lineWidth: 3)
+          .background(Color.white)
+          .cornerRadius(15)
+        Text(card.content)
+      } else if card.isMatched {
+        roundedRectangle
+          .opacity(0)
+      } else {
         roundedRectangle
       }
     }
-    .onTapGesture { isFaceUp.toggle() }
-    .aspectRatio(2/3, contentMode: .fill)
   }
 }
 
-
-///HStack with 3 ThemeChoserButton's
-struct ThemeChoser: View {
-  @Binding var emojiCount: Int
-  @Binding var emojis: [String]
+struct MenuView: View {
+  let viewModel: EmojiMemoryGame
   var body: some View {
-    HStack(alignment: .firstTextBaseline) {
-      ThemeChoserButton(emojiCount: $emojiCount, emojis: $emojis, selectedEmojis: EmojiStore.vehicles, imageName: "car", description: "Vehicles")
-      Spacer()
-      ThemeChoserButton(emojiCount: $emojiCount, emojis: $emojis, selectedEmojis: EmojiStore.flags, imageName: "flag", description: "Flags")
-        .padding(.trailing)
-      Spacer()
-      ThemeChoserButton(emojiCount: $emojiCount, emojis: $emojis, selectedEmojis: EmojiStore.fruits, imageName: "circle.fill", description: "Fruits")
-    }
-  }
-}
-
-///Button with label made of VStack-ed SF symbol and short text description
-struct ThemeChoserButton: View {
-  @Binding var emojiCount: Int
-  @Binding var emojis: [String]
-  var selectedEmojis: [String]
-  var imageName, description: String
-  var body: some View {
-    Button {
-      emojis = selectedEmojis.shuffled()
-      emojiCount = Int.random(in: 4...16)
-    } label: {
-      VStack {
-        Image(systemName: imageName)
-        Text(description)
-          .font(.subheadline)
-          .foregroundColor(.accentColor)
+    Menu("New game") {
+      ForEach(Theme.themes) { theme in
+        Button {
+          viewModel.startNewGame(theme: theme)
+        } label: {
+          Text(theme.name)
+        }
+      }
+      Divider()
+      Button {
+        viewModel.startNewGame()
+      } label: {
+        Text("Generate random theme")
       }
     }
   }
 }
 
-
-struct EmojiStore {
-  static let vehicles = ["🚲", "🚂", "🚁", "🚜", "🚕", "🏎", "🚑", "🚓", "🚒", "✈️", "🚀", "⛵️", "🛸", "🛶", "🚌", "🏍", "🛺", "🚠", "🛵", "🚗", "🚚", "🚇", "🚙", "🚝"]
-  static let fruits = ["🍏", "🍎", "🍐", "🍊", "🍋", "🍌", "🍈", "🍉", "🍇", "🍓", "🫐", "🍈", "🍒", "🍑", "🥭", "🍍", "🥝"]
-  static let flags = ["🏳️‍⚧️", "🇺🇳", "🇦🇿", "🇧🇾", "🇧🇪", "🇧🇴", "🇧🇷", "🇬🇧", "🇨🇦", "🇺🇸", "🇺🇦", "🇨🇭", "🇰🇷", "🇷🇺", "🇸🇪", "🇨🇿", "🇯🇵"]
-}
 
 
 
@@ -128,11 +96,9 @@ struct EmojiStore {
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-//      ContentView()
-//        .previewInterfaceOrientation(.landscapeRight)
-      ContentView()
+      let game = EmojiMemoryGame()
+      ContentView(viewModel: game)
     }
   }
 }
-
 
