@@ -21,23 +21,24 @@ struct ContentView: View {
         MenuView(viewModel: viewModel)
       }
       .font(.headline)
-      ScrollView {
+      GeometryReader { proxy in
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-          ForEach(viewModel.cards) { card in
-            CardView(card: card)
-              .onTapGesture { viewModel.choose(card) }
-              .aspectRatio(2/3, contentMode: .fill)
+            ForEach(viewModel.cards) { card in
+              CardView(card: card)
+                .onTapGesture { viewModel.choose(card) }
+                .aspectRatio(2/3, contentMode: .fill)
+            }
           }
-        }
+        .foregroundColor(viewModel.theme.color)
       }
-      .foregroundColor(viewModel.color)
     }
     .font(.largeTitle)
     .padding(.horizontal)
   }
-//  
-//  func minimumSize(forNumberOfCards number: Int) -> CGFloat {
-//    
+//
+//  func calculateMinimumWidth(for sizeOfContainer: CGSize) -> CGFloat {
+//    var minSizeOfCard: CGFloat = 0.0
+//
 //  }
 }
 

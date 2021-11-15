@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
+
 
 // Тема игры
 struct Theme: Identifiable {
-  
+  static let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple]
   static let themes = [
     Theme(name: "Orange vehicles", emojis: EmojiStore.vehicles, numberOfPairsOfCardsToShow: 9, color: .orange),
     Theme(name: "Purple vehicles", emojis: EmojiStore.vehicles, numberOfPairsOfCardsToShow: 24, color: .purple),
@@ -22,16 +24,19 @@ struct Theme: Identifiable {
   let name: String
   let emojis: [String]
   var numberOfPairsOfCardsToShow: Int 
-  let color: Theme.Color
+  let color: Color
   let id = UUID()
   
+  
+  //Создать рандомную тему, используя другой инициализатор
   init() {
     self.init(name: "Random theme",
               emojis: EmojiStore.allEmojis.randomElement()!,
               numberOfPairsOfCardsToShow: Int.random(in: 4...20),
-              color: Color.allCases.randomElement()!)
+              color: Theme.colors.randomElement()!)
   }
   
+  //Основной инициализатор. Помимо инициализации исправляет, если надо, numberOfPairsOfCardsToShow и удаляет лишние эмодзи
   init(name: String, emojis: [String], numberOfPairsOfCardsToShow: Int = Int.max, color: Color) {
     self.name = name
     self.color = color
@@ -50,10 +55,6 @@ struct Theme: Identifiable {
     static var allEmojis: [[String]] {
       [vehicles, fruits, flags]
     }
-  }
-
-  enum Color: CaseIterable {
-    case purple, orange, yellow, blue, gray, green, red
   }
 }
 
