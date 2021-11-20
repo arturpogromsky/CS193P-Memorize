@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemoryGameView.swift
 //  Memorize
 //
 //  Created by Артур Погромский on 04.10.2021.
@@ -7,29 +7,29 @@
 
 import SwiftUI
 
-struct ContentView: View {
-  @ObservedObject var viewModel: EmojiMemoryGame
+struct EmojiMemoryGameView: View {
+  @ObservedObject var game: EmojiMemoryGame
   var body: some View {
     VStack(alignment: .center) {
       HStack(alignment: .firstTextBaseline) {
-        Text("Score: " + viewModel.score)
+        Text("Score: " + game.score)
         Spacer()
-        Text(viewModel.theme.name)
+        Text(game.theme.name)
           .font(.title2)
           .fontWeight(.bold)
         Spacer()
-        MenuView(viewModel: viewModel)
+        MenuView(viewModel: game)
       }
       .font(.headline)
-      GeometryReader { proxy in
+      GeometryReader { _ in
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-            ForEach(viewModel.cards) { card in
+            ForEach(game.cards) { card in
               CardView(card: card)
-                .onTapGesture { viewModel.choose(card) }
+                .onTapGesture { game.choose(card) }
                 .aspectRatio(2/3, contentMode: .fill)
             }
           }
-        .foregroundColor(viewModel.theme.color)
+        .foregroundColor(game.theme.color)
       }
     }
     .font(.largeTitle)
@@ -42,9 +42,8 @@ struct ContentView: View {
 //  }
 }
 
-
 struct CardView: View {
-  let card: MemoryGame<String>.Card
+  let card: EmojiMemoryGame.Card
   var body: some View {
     ZStack {
       let cornerRadius: CGFloat = 15
@@ -86,20 +85,11 @@ struct MenuView: View {
   }
 }
 
-
-
-
-
-
-
-
-
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
       let game = EmojiMemoryGame()
-      ContentView(viewModel: game)
+      EmojiMemoryGameView(game: game)
     }
   }
 }
-

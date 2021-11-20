@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct MemoryGame<CardContent: Equatable> {
   
   private(set) var cards: [Card]
@@ -61,7 +60,8 @@ struct MemoryGame<CardContent: Equatable> {
   }
   
   init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
-    cards = Array<Card>()
+    cards = []
+    // Добавить numberOfPairsOfCards x 2 в массив карт
     for pairIndex in 0..<numberOfPairsOfCards {
       let content = createCardContent(pairIndex)
       cards.append(Card(content: content, id: pairIndex * 2))
@@ -69,7 +69,7 @@ struct MemoryGame<CardContent: Equatable> {
     }
     cards.shuffle()
   }
-  
+
   struct Card: Identifiable {
     var isFaceUp = false
     var isMatched = false
@@ -78,5 +78,3 @@ struct MemoryGame<CardContent: Equatable> {
     let id: Int
   }
 }
-
-

@@ -11,7 +11,7 @@
 		EEB153182736A1EB000D46BA /* MemoryGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB153172736A1EB000D46BA /* MemoryGame.swift */; };
 		EEB1531A2736A1FF000D46BA /* EmojiMemoryGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB153192736A1FF000D46BA /* EmojiMemoryGame.swift */; };
 		EEED5694270B682200BD5818 /* MemorizeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED5693270B682200BD5818 /* MemorizeApp.swift */; };
-		EEED5696270B682200BD5818 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED5695270B682200BD5818 /* ContentView.swift */; };
+		EEED5696270B682200BD5818 /* EmojiMemoryGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED5695270B682200BD5818 /* EmojiMemoryGameView.swift */; };
 		EEED5698270B682300BD5818 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEED5697270B682300BD5818 /* Assets.xcassets */; };
 		EEED569B270B682300BD5818 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEED569A270B682300BD5818 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -22,7 +22,7 @@
 		EEB153192736A1FF000D46BA /* EmojiMemoryGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiMemoryGame.swift; sourceTree = "<group>"; };
 		EEED5690270B682200BD5818 /* Memorize.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memorize.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEED5693270B682200BD5818 /* MemorizeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemorizeApp.swift; sourceTree = "<group>"; };
-		EEED5695270B682200BD5818 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EEED5695270B682200BD5818 /* EmojiMemoryGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiMemoryGameView.swift; sourceTree = "<group>"; };
 		EEED5697270B682300BD5818 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EEED569A270B682300BD5818 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -61,7 +61,7 @@
 				EE1ECD8B2740424100EA7F0B /* Theme.swift */,
 				EEB153192736A1FF000D46BA /* EmojiMemoryGame.swift */,
 				EEED5693270B682200BD5818 /* MemorizeApp.swift */,
-				EEED5695270B682200BD5818 /* ContentView.swift */,
+				EEED5695270B682200BD5818 /* EmojiMemoryGameView.swift */,
 				EEED5697270B682300BD5818 /* Assets.xcassets */,
 				EEED5699270B682300BD5818 /* Preview Content */,
 			);
@@ -83,6 +83,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EEED569E270B682300BD5818 /* Build configuration list for PBXNativeTarget "Memorize" */;
 			buildPhases = (
+				EE0D7D0127496E41004A99F6 /* ShellScript */,
 				EEED568C270B682200BD5818 /* Sources */,
 				EEED568D270B682200BD5818 /* Frameworks */,
 				EEED568E270B682200BD5818 /* Resources */,
@@ -141,13 +142,33 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		EE0D7D0127496E41004A99F6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/zsh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftlint; then\n    swiftlint autocorrect && swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		EEED568C270B682200BD5818 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				EEB153182736A1EB000D46BA /* MemoryGame.swift in Sources */,
-				EEED5696270B682200BD5818 /* ContentView.swift in Sources */,
+				EEED5696270B682200BD5818 /* EmojiMemoryGameView.swift in Sources */,
 				EE1ECD8C2740424100EA7F0B /* Theme.swift in Sources */,
 				EEED5694270B682200BD5818 /* MemorizeApp.swift in Sources */,
 				EEB1531A2736A1FF000D46BA /* EmojiMemoryGame.swift in Sources */,

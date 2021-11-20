@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 // Тема игры
 struct Theme: Identifiable {
   static let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple]
@@ -20,23 +19,23 @@ struct Theme: Identifiable {
     Theme(name: "Orange flags", emojis: EmojiStore.flags, numberOfPairsOfCardsToShow: 10, color: .orange),
     Theme(name: "Purple flags", emojis: EmojiStore.flags, color: .purple)
   ]
-  
+
   let name: String
   let emojis: [String]
-  var numberOfPairsOfCardsToShow: Int 
+  var numberOfPairsOfCardsToShow: Int
   let color: Color
   let id = UUID()
-  
-  
-  //Создать рандомную тему, используя другой инициализатор
+
+  // Создать рандомную тему, используя другой инициализатор
   init() {
     self.init(name: "Random theme",
               emojis: EmojiStore.allEmojis.randomElement()!,
               numberOfPairsOfCardsToShow: Int.random(in: 4...20),
               color: Theme.colors.randomElement()!)
   }
-  
-  //Основной инициализатор. Помимо инициализации исправляет, если надо, numberOfPairsOfCardsToShow и удаляет лишние эмодзи
+
+  // Основной инициализатор. Помимо инициализации исправляет, если надо,
+  // numberOfPairsOfCardsToShow и удаляет лишние эмодзи
   init(name: String, emojis: [String], numberOfPairsOfCardsToShow: Int = Int.max, color: Color) {
     self.name = name
     self.color = color
@@ -47,7 +46,7 @@ struct Theme: Identifiable {
     }
     self.emojis = Array(emojisToShow.shuffled()[0..<self.numberOfPairsOfCardsToShow])
   }
-  
+
   private struct EmojiStore {
     static let vehicles = ["🚲", "🚂", "🚁", "🚜", "🚕", "🏎", "🚑", "🚓", "🚒", "✈️", "🚀", "⛵️", "🛸", "🛶", "🚌", "🏍", "🛺", "🚠", "🛵", "🚗", "🚚", "🚇", "🚙", "🚝"] // 24 emojis
     static let fruits = ["🍏", "🍎", "🍐", "🍊", "🍋", "🍌", "🍈", "🍉", "🍇", "🍓", "🫐", "🍈", "🍒", "🍑", "🥭", "🍍", "🥝"] // 17 emojis
@@ -57,5 +56,3 @@ struct Theme: Identifiable {
     }
   }
 }
-
-
