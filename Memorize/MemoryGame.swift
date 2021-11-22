@@ -11,51 +11,61 @@ struct MemoryGame<CardContent: Equatable> {
   
   private(set) var cards: [Card]
   
-  private var indexOfFirstSelectedCard: Int? //Индекс первой выбранной карты
+  //Индекс первой выбранной карты
+  private var indexOfFirstSelectedCard: Int? {
+    get {
+      let faceUpCardsIndices = cards.indices.filter { cards[$0].isFaceUp }
+      return faceUpCardsIndices.count == 1 ? faceUpCardsIndices.first! : nil
+    }
+    set {
+      for cardIndex in cards.indices {
+        if cards[cardIndex].isFaceUp {
+          cards[cardIndex].wasSeen = true
+        }
+        cards[cardIndex].isFaceUp = false
+      }
+    }
+  }
   
   var score = 0
   
-  var timeOfLastSelection: Date? //Время с последнего касания
+
   
   ///Функция, которая вызывается при нажатии на карту. Реализует игровую логику
   mutating func choose(_ card: Card) {
-    if let chosenIndex = cards.firstIndex(where: { $0.id == card.id }),
+    guard let chosenIndex = cards.firstIndex(where: { $0.id == card.id }),
        cards[chosenIndex].isFaceUp == false,
        cards[chosenIndex].isMatched == false
-    {
-      if let selectedCard = indexOfFirstSelectedCard { // Одна карта уже выбрана, выбрать вторую и сравнить с первой
-        if cards[selectedCard].content == cards[chosenIndex].content {
-          cards[selectedCard].isMatched = true
-          cards[chosenIndex].isMatched = true
-          // score += 2
-          if let timeOfLastSelection = timeOfLastSelection {
-            let currentTime = Date()
-            let timeDistance = Int(timeOfLastSelection.distance(to: currentTime))
-            score += 2 * max(1, 10 - timeDistance)
-            print("Added \(max(1, 10 - timeDistance)) to score")
-          } else {
-            score += 2
-          }
-        } else {
-          if cards[selectedCard].wasSeen {
-            score -= 1
-          }
-          if cards[chosenIndex].wasSeen {
-            score -= 1
-          }
-        }
-        self.indexOfFirstSelectedCard = nil
-      } else { // Карта либо еще не выбрана, либо выбраны уже 2 карты.
-        for cardIndex in cards.indices {
-          if cards[cardIndex].isFaceUp {
-            cards[cardIndex].wasSeen = true
-          }
-          cards[cardIndex].isFaceUp = false
-        }
-        self.indexOfFirstSelectedCard = chosenIndex
+    else { return }
+    cards[chosenIndex].timeOfLastSelection = Date()
+    if let selectedCard = indexOfFirstSelectedCard { // Одна карта уже выбрана, выбрать вторую и сравнить с первой
+      if cards[selectedCard].content == cards[chosenIndex].content {
+        cards[selectedCard].isMatched = true
+        cards[chosenIndex].isMatched = true
+        calculateScoreForCardIndices(selectedCard, chosenIndex, matched: true)
+      } else {
+        calculateScoreForCardIndices(selectedCard, chosenIndex, matched: false)
       }
-      cards[chosenIndex].isFaceUp.toggle()
-      timeOfLastSelection = Date()
+    } else {
+      // Карта либо еще не выбрана, либо выбраны уже 2 карты.
+      self.indexOfFirstSelectedCard = chosenIndex
+    }
+    cards[chosenIndex].isFaceUp.toggle()
+  }
+  
+  mutating func calculateScoreForCardIndices(_ firstCardIndex: Int, _ secondCardIndex: Int, matched: Bool) {
+    if matched {
+      let timeDistance = Int(cards[firstCardIndex]
+                              .timeOfLastSelection.distance(to: cards[secondCardIndex].timeOfLastSelection))
+      score += 2 * max(1, 10 - timeDistance)
+      print("Added \(max(1, 10 - timeDistance)) to score")
+    } else {
+      if cards[firstCardIndex].wasSeen {
+        score -= 1
+      }
+      if cards[secondCardIndex].wasSeen {
+        score -= 1
+      }
     }
   }
   
@@ -73,8 +83,9 @@ struct MemoryGame<CardContent: Equatable> {
   struct Card: Identifiable {
     var isFaceUp = false
     var isMatched = false
-    var wasSeen = false
     let content: CardContent
     let id: Int
+    var wasSeen = false
+    var timeOfLastSelection: Date!
   }
 }
